@@ -77,13 +77,12 @@ PyCharm-like Python debugging with breakpoints, stepping, variable inspection, a
 - Call stack navigation
 - Built-in debugging methodology and best practices
 
-**Quick Start:**
-```bash
-python scripts/debugger.py start script.py
-python scripts/debugger.py break -f script.py -l 25
-python scripts/debugger.py continue
-python scripts/debugger.py locals
-python scripts/debugger.py quit
+**Usage:** Just ask Claude Code to debug your Python scripts:
+```
+"Debug my_script.py - it's returning wrong values"
+"Set a breakpoint at line 25 and inspect the variables"
+"Why is this function crashing?"
+"Step through the loop and show me what's happening"
 ```
 
 ## Repository Structure
@@ -107,8 +106,66 @@ python-debugger-skill/
 │                   ├── commands.md
 │                   ├── examples.md
 │                   └── troubleshooting.md
+├── examples/
+│   └── buggy_calculator.py      # Try debugging this!
 └── README.md
 ```
+
+## Try It Out
+
+The repo includes an example buggy script with 3 intentional bugs. After installing the plugin, ask Claude Code to debug it.
+
+### 1. First, see the bugs in action
+
+```bash
+python examples/buggy_calculator.py
+```
+
+You'll see incorrect outputs and errors.
+
+### 2. Ask Claude Code to debug
+
+Once the plugin is installed, just ask Claude Code naturally:
+
+```
+"Debug examples/buggy_calculator.py - it's crashing on empty lists"
+```
+
+```
+"Help me find why calculate_total_price returns wrong values on the second call"
+```
+
+```
+"Step through process_user_data and figure out why it's missing users"
+```
+
+Claude Code will automatically use the python-debugging skill to:
+- Start a debug session
+- Set appropriate breakpoints
+- Step through the code
+- Inspect variables
+- Identify the root cause
+- Explain what's wrong and how to fix it
+
+### Example Debugging Session
+
+**You:** "Debug examples/buggy_calculator.py - the calculate_total_price function returns wrong values"
+
+**Claude Code:** *Uses the debugging skill to:*
+1. Start the debugger on the script
+2. Set a breakpoint inside `apply_discount`
+3. Continue and inspect the `discounts` list
+4. Notice it accumulates across calls (mutable default argument bug)
+5. Explain the issue and suggest the fix
+
+### What Claude Code Can Debug
+
+Just describe the problem naturally:
+- "This script crashes sometimes, help me find why"
+- "Why does this function return None?"
+- "Debug this - the loop skips some items"
+- "Set a breakpoint at line 45 and show me what's in the data variable"
+- "Step through the calculate function and explain what's happening"
 
 ## Requirements
 
