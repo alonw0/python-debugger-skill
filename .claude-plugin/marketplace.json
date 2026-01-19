@@ -1,0 +1,13 @@
+{
+  "name": "python-debugger-marketplace",
+  "owner": {
+    "name": "Alon Wolenitz"
+  },
+  "plugins": [
+    {
+      "name": "python-debugger",
+      "source": "./plugins/python-debugger",
+      "description": "PyCharm-like Python debugging with breakpoints, stepping, variable inspection, and stack navigation"
+    }
+  ]
+}

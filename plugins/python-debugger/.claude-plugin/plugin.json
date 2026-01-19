@@ -1,0 +1,20 @@
+{
+  "name": "python-debugger",
+  "version": "1.0.0",
+  "description": "PyCharm-like Python debugging with breakpoints, stepping, variable inspection, and stack navigation",
+  "author": {
+    "name": "Alon Wolenitz",
+    "url": "https://github.com/alonw0"
+  },
+  "homepage": "https://github.com/alonw0/python-debugger-skill",
+  "repository": "https://github.com/alonw0/python-debugger-skill",
+  "license": "MIT",
+  "keywords": [
+    "python",
+    "debugging",
+    "breakpoints",
+    "developer-tools",
+    "code-inspection"
+  ],
+  "skills": "./skills/"
+}

@@ -1,285 +1,120 @@
-# Python Debugger Skill for Claude Code
+# Python Debugger Plugin Marketplace
 
-A PyCharm-like debugging experience for Python scripts within Claude Code. Set breakpoints, step through code, inspect variables, and navigate the call stack—all through a simple CLI interface.
+A Claude Code plugin marketplace containing the Python Debugger plugin - PyCharm-like debugging for Python scripts.
 
-## Features
+## Why Use This Skill?
 
-- **Breakpoints**: Line breakpoints, conditional breakpoints, and exception breakpoints
-- **Execution Control**: Continue, step into, step over, and run until return
-- **Variable Inspection**: View locals, globals, evaluate expressions, deep inspect objects
-- **Stack Navigation**: View call stack, move up/down frames, inspect variables in any frame
-- **Session Management**: Persistent debugging sessions that survive across commands
-- **JSON Output**: All commands return structured JSON for easy parsing
+### The Problem
+
+When Claude Code encounters a bug in Python code, it typically resorts to:
+- Adding print statements and re-running
+- Reading code and guessing what's wrong
+- Making changes based on assumptions without verifying them
+
+This is inefficient. Real developers don't debug this way—they use debuggers.
+
+### The Solution
+
+This skill gives Claude Code the same debugging capabilities that developers use in PyCharm or VS Code:
+
+- **Set breakpoints** at specific lines or on exceptions
+- **Step through code** line by line to see exactly what happens
+- **Inspect variables** at any point during execution
+- **Navigate the call stack** to understand how execution reached a certain point
+- **Evaluate expressions** in the current context to test hypotheses
+
+### Why This Matters
+
+1. **Faster bug resolution** - Instead of guessing and re-running, Claude can pause execution exactly where needed and inspect state directly.
+
+2. **Systematic debugging** - The skill includes debugging methodology that teaches Claude to debug like an experienced developer: form hypotheses, verify assumptions, binary search for bugs.
+
+3. **Better accuracy** - By actually observing runtime values rather than inferring them from code, Claude makes fewer mistakes when diagnosing issues.
+
+4. **Complex bug handling** - Some bugs only manifest at runtime with specific data. Print debugging can't easily catch issues like race conditions, state mutations, or deep call stack problems. A real debugger can.
+
+### Example Scenario
+
+**Without this skill:**
+```
+User: "This function returns wrong values sometimes"
+Claude: *reads code* "I think the issue might be X. Let me add some prints..."
+*adds prints, runs, reads output, guesses again*
+```
+
+**With this skill:**
+```
+User: "This function returns wrong values sometimes"
+Claude: *sets conditional breakpoint* "Let me pause when the output looks wrong"
+*inspects actual variable values at that moment*
+"Found it - the input was None here because..."
+```
+
+## Installation
+
+### 1. Add the marketplace
+
+```bash
+/plugin marketplace add alonw0/python-debugger-skill
+```
+
+### 2. Install the plugin
+
+```bash
+/plugin install python-debugger@python-debugger-marketplace
+```
+
+## Available Plugins
+
+### python-debugger
+
+PyCharm-like Python debugging with breakpoints, stepping, variable inspection, and stack navigation.
+
+**Features:**
+- Line, conditional, and exception breakpoints
+- Step into, step over, continue, finish
+- Variable inspection (locals, globals, eval, deep inspect)
+- Call stack navigation
+- Built-in debugging methodology and best practices
+
+**Quick Start:**
+```bash
+python scripts/debugger.py start script.py
+python scripts/debugger.py break -f script.py -l 25
+python scripts/debugger.py continue
+python scripts/debugger.py locals
+python scripts/debugger.py quit
+```
+
+## Repository Structure
+
+```
+python-debugger-skill/
+├── .claude-plugin/
+│   └── marketplace.json
+├── plugins/
+│   └── python-debugger/
+│       ├── .claude-plugin/
+│       │   └── plugin.json
+│       └── skills/
+│           └── python-debugging/
+│               ├── SKILL.md
+│               ├── scripts/
+│               │   ├── debugger.py
+│               │   └── inspector.py
+│               └── references/
+│                   ├── methodology.md
+│                   ├── commands.md
+│                   ├── examples.md
+│                   └── troubleshooting.md
+└── README.md
+```
 
 ## Requirements
 
 - Python 3.7+
-- Unix-like operating system (macOS, Linux) - uses Unix sockets for IPC
-
-## Installation
-
-Clone or copy this skill to your Claude Code skills directory:
-
-```bash
-# Clone the repository
-git clone <repository-url> python-debugger-skill
-
-# Or copy to your skills directory
-cp -r python-debugger-skill ~/.claude/skills/
-```
-
-## Quick Start
-
-### 1. Start a Debug Session
-
-```bash
-python scripts/debugger.py start your_script.py [args...]
-```
-
-The debugger starts and pauses at the first line of your script.
-
-### 2. Set Breakpoints
-
-```bash
-# Line breakpoint
-python scripts/debugger.py break -f your_script.py -l 25
-
-# Conditional breakpoint (stops only when condition is true)
-python scripts/debugger.py break -f your_script.py -l 25 -c "count > 100"
-
-# Exception breakpoint
-python scripts/debugger.py break -e ValueError    # Specific exception
-python scripts/debugger.py break -e "*"           # All exceptions
-```
-
-### 3. Control Execution
-
-```bash
-python scripts/debugger.py continue   # Run until next breakpoint
-python scripts/debugger.py step       # Step into function calls
-python scripts/debugger.py next       # Step over (stay in current function)
-python scripts/debugger.py finish     # Run until current function returns
-```
-
-### 4. Inspect State
-
-```bash
-python scripts/debugger.py locals              # View local variables
-python scripts/debugger.py globals             # View global variables
-python scripts/debugger.py eval "len(items)"   # Evaluate any expression
-python scripts/debugger.py inspect my_object   # Deep inspect an object
-```
-
-### 5. Navigate the Stack
-
-```bash
-python scripts/debugger.py stack   # View the call stack
-python scripts/debugger.py up      # Move to caller's frame
-python scripts/debugger.py down    # Move back toward current frame
-```
-
-### 6. End Session
-
-```bash
-python scripts/debugger.py quit
-```
-
-## Command Reference
-
-| Command | Description | Options |
-|---------|-------------|---------|
-| `start <script> [args]` | Start debugging a script | Script path and optional arguments |
-| `status` | Check debugger status | `-s/--script` for specific script |
-| `break` | Set a breakpoint | `-f/--file`, `-l/--line`, `-c/--condition`, `-e/--exception` |
-| `delete` | Delete a breakpoint | `-f/--file`, `-l/--line`, `-n/--number`, `-e/--exception` |
-| `breakpoints` | List all breakpoints | — |
-| `continue` | Continue execution | — |
-| `step` | Step into next line | — |
-| `next` | Step over to next line | — |
-| `finish` | Run until function returns | — |
-| `locals` | Get local variables | `-d/--depth` for inspection depth |
-| `globals` | Get global variables | `-d/--depth` for inspection depth |
-| `eval <expr>` | Evaluate an expression | Expression string |
-| `inspect <expr>` | Deep inspect variable | `-d/--depth` for inspection depth |
-| `stack` | Show call stack | — |
-| `up` | Move up the call stack | — |
-| `down` | Move down the call stack | — |
-| `quit` | End debug session | — |
-
-## Example Session
-
-Here's a complete debugging session for a script with a bug:
-
-```python
-# buggy_script.py
-def calculate_average(numbers):
-    total = 0
-    for num in numbers:
-        total += num
-    return total / len(numbers)  # Bug: crashes on empty list
-
-data = []
-result = calculate_average(data)
-print(f"Average: {result}")
-```
-
-**Debugging session:**
-
-```bash
-$ python scripts/debugger.py start buggy_script.py
-{"status": "paused", "location": {"line": 1, "function": "<module>"}, ...}
-
-$ python scripts/debugger.py break -e ZeroDivisionError
-{"status": "ok", "message": "Exception breakpoint set for ZeroDivisionError"}
-
-$ python scripts/debugger.py continue
-{"status": "paused", "stop_reason": "exception",
- "location": {"file": "buggy_script.py", "line": 5, "function": "calculate_average"},
- "exception": {"type": "ZeroDivisionError", "message": "division by zero"},
- "variables": {"locals": {"total": {"value": "0"}, "numbers": {"value": "[]"}}}}
-
-# Found it! numbers is empty, causing division by zero
-
-$ python scripts/debugger.py quit
-{"status": "terminated"}
-```
-
-## JSON Output Format
-
-All commands return JSON for easy integration:
-
-```json
-{
-  "status": "paused",
-  "stop_reason": "line",
-  "location": {
-    "file": "/path/to/script.py",
-    "line": 45,
-    "function": "process_data",
-    "code": "    result = calculate(item)"
-  },
-  "variables": {
-    "locals": {
-      "item": {"type": "dict", "value": "{'id': 1, 'name': 'test'}"},
-      "result": {"type": "NoneType", "value": "None"}
-    }
-  }
-}
-```
-
-## Architecture
-
-The debugger uses a **persistent subprocess + Unix socket** architecture:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Claude Code CLI                          │
-└─────────────────────────────────────────────────────────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-        ▼                     ▼                     ▼
-   debugger.py           debugger.py          debugger.py
-   start script.py       break -f ...         continue
-        │                     │                     │
-        │                     │                     │
-        ▼                     ▼                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Debugger Subprocess (persistent)                │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │  ClaudeDebugger (extends bdb.Bdb)                   │    │
-│  │  - Manages breakpoints                              │    │
-│  │  - Controls execution                               │    │
-│  │  - Inspects frames                                  │    │
-│  └─────────────────────────────────────────────────────┘    │
-│                            │                                 │
-│                            ▼                                 │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │  Unix Socket Server                                 │    │
-│  │  - Receives commands                                │    │
-│  │  - Sends JSON responses                             │    │
-│  └─────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Session State (~/.claude_debugger/)             │
-│  - Session metadata (PID, script path, socket path)         │
-│  - Enables session recovery                                  │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**Why this architecture?**
-
-- Python's `bdb` debugger state (frames, locals, breakpoints) cannot be serialized
-- The debugger process must stay alive across commands
-- Unix sockets provide reliable IPC for command/response patterns
-- Session state files enable recovery and multi-session support
-
-## File Structure
-
-```
-python-debugger-skill/
-├── README.md                 # This file
-├── SKILL.md                  # Claude Code skill definition
-├── scripts/
-│   ├── debugger.py           # Core debugger implementation
-│   └── inspector.py          # Deep object inspection utilities
-└── references/
-    ├── commands.md           # Detailed command reference
-    ├── examples.md           # Example debugging sessions
-    └── troubleshooting.md    # Common issues and solutions
-```
-
-## Troubleshooting
-
-### "Could not connect to debugger. Is it running?"
-
-The debugger subprocess may have terminated. Check status and restart:
-
-```bash
-python scripts/debugger.py status
-python scripts/debugger.py quit  # Clean up if needed
-python scripts/debugger.py start script.py
-```
-
-### "Debugger already running for this script"
-
-A previous session wasn't properly terminated:
-
-```bash
-python scripts/debugger.py quit
-# If that fails:
-rm -rf ~/.claude_debugger/
-```
-
-### Script doesn't stop at breakpoints
-
-1. Verify the file path is correct (use absolute paths)
-2. Ensure the line contains executable code (not a comment or blank line)
-3. For conditional breakpoints, verify the condition can be true
-
-### Expression evaluation times out
-
-The `eval` command has a 5-second timeout. Simplify your expression or avoid operations on very large data structures.
-
-## Limitations
-
-- **Unix-only**: Requires Unix sockets (macOS, Linux)
-- **Single script**: One debug session per script at a time
-- **No remote debugging**: Debugger runs locally only
-- **No threading support**: Limited support for multi-threaded scripts
-
-## Contributing
-
-Contributions are welcome! Areas for improvement:
-
-- [ ] Windows support (named pipes instead of Unix sockets)
-- [ ] Watch expressions
-- [ ] Breakpoint persistence across sessions
-- [ ] Integration with popular testing frameworks
-- [ ] Source code display with context
+- macOS or Linux
 
 ## License
 
-MIT License - See LICENSE file for details.
+MIT
